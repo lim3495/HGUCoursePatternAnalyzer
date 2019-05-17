@@ -2,6 +2,7 @@ package edu.handong.analysis;
 
 import edu.handong.analysis.datamodel.Course;
 import edu.handong.analysis.datamodel.Student;
+import java.util.ArrayList;
 
 public class HGUCoursePatternAnalyzer {
 	
@@ -21,8 +22,8 @@ public class HGUCoursePatternAnalyzer {
 
 	private int numOfStudents;
 	private int numOfCourses;
-	private Student[] students;
-	private Course[] courses;
+	private ArrayList<Student> students = new ArrayList<Student>();
+	private ArrayList<Course> courses= new ArrayList<Course>();
 	
 	/**
 	 * This method runs our analysis logic to get the list of student and course names from lines.
@@ -32,54 +33,45 @@ public class HGUCoursePatternAnalyzer {
 		
 		numOfStudents = Integer.parseInt(args[0]);
 		numOfCourses = Integer.parseInt(args[1]);
-	
-		students = initiateStudentArrayFromLines(lines);
 		
+		
+		initiateStudentArrayFromLines(lines);
 		
 		System.out.println("Number of All Students: " + numOfStudents);
-		for(Student student: students) {
-			System.out.println(student.getName());
+		
+		for(Student student : students) {
+			{
+					System.out.println(student.getName());
+			}		
+			
 		}
-
-		courses = initiateCourseArrayFromLines(lines);
+		
+		initiateCourseArrayFromLines(lines);
+		
 		System.out.println("Number of All Courses: " + numOfCourses);
-		for(Course course: courses) {
-			System.out.println(course.getCourseName());
-		}
+			for(Course course: courses) {
+				System.out.println(course.getCourseName());
+			}
 		
 	}
 
 	/**
 	 * This method returns a Student array to initiate the field, students, from lines.
 	 * @param lines
-	 * @return Student[]
+	 * @return void
 	 */
-	private Student[] initiateStudentArrayFromLines(String[] lines) {
+	private void initiateStudentArrayFromLines(String[] lines) {
 		
-		Student std;		
-		Student[] stds = new Student[this.numOfStudents];
-		String[] names = new String[1000];
-		int st_cnt=0;
-
+		Student std ;		
 		
-		for(int i=0 ; i<lines.length ; i++) {
-			if(lines[i] !=null)
-				names[i] = lines[i].trim().split(", ")[1];
-		} // initial in String
-		
-		for(int i=0 ; i<lines.length;i++) {
-			std = new Student(names[i]);
-			//assign to student class
+		for(String line : lines) {
+			std = new Student(line.split(",")[1].trim());
 			
-			//System.out.println(std.getName());
-			
-			if((this.studentExist(stds, std))) {
-				stds[st_cnt] = std;
-				st_cnt++;
+			if((this.studentExist(this.students, std))) {
+				this.students.add(std);	
 			}
 		}
-		
-		return stds;
+	
 	}
 
 	/**
@@ -88,52 +80,32 @@ public class HGUCoursePatternAnalyzer {
 	 * @param student
 	 * @return boolean
 	 */
-	private boolean studentExist(Student[] students, Student student) {
+	private boolean studentExist(ArrayList<Student> students, Student student) {
 		
-		int i=0 ;
-		
-		while(students[i] != null) {
-		//null 이 아닐 때 까지, students의 전체 값을 비교해주어야함.
-			if(students[i].getName().equals(student.getName())==true) {
-				return false;
-			}	
-			i++;
+		for(int i=0 ; i<students.size() ; i++) {
+				if(students.get(i).getName().equals(student.getName())==true) 
+					return false;
 		}
-
+		
 		return true;
 	}
 	
 	/**
 	 * This method returns a Course array to initiate the field, courses, from lines.
 	 * @param lines
-	 * @return Course[]
+	 * @return void
 	 */
-	private Course[] initiateCourseArrayFromLines(String[] lines) {
+	private void initiateCourseArrayFromLines(String[] lines) {
 		
-		Course crs;		
-		Course[] crss = new Course[this.numOfCourses];
-		String[] courses = new String[1000];
-		int crs_cnt=0;
-
-		
-		for(int i=0 ; i<lines.length ; i++) {
-			if(lines[i] !=null)
-				courses[i] = lines[i].trim().split(", ")[2];
-		} // initial in String
-		
-		for(int i=0 ; i<lines.length;i++) {
-			crs = new Course(courses[i]);
-			//assign to student class
+		Course crs ;		
 			
-			//System.out.println(std.getName());
-			
-			if((this.courseExist(crss, crs))) {
-				crss[crs_cnt] = crs;
-				crs_cnt++;
+			for(String line : lines) {
+				crs = new Course(line.split(",")[2].trim());
+				
+				if((this.courseExist(courses, crs))) {
+					this.courses.add(crs);	
+				}
 			}
-		}
-		
-		return crss;
 	}
 
 	/**
@@ -142,18 +114,14 @@ public class HGUCoursePatternAnalyzer {
 	 * @param course
 	 * @return boolean
 	 */
-	private boolean courseExist(Course[] courses, Course course) {
-		int i=0 ;
+	private boolean courseExist(ArrayList<Course> courses, Course crs) {
 		
-		while(courses[i] != null) {
-			//null 이 아닐 때 까지, course의 전체 값을 비교해주어야함.
-			if(courses[i].getCourseName().equals(course.getCourseName())==true) {
+		for(int i=0 ; i<courses.size() ; i++) {
+			if(courses.get(i).getCourseName().equals(crs.getCourseName())==true) 
 				return false;
-			}	
-			i++;
-		}
-
-		return true;
+	}
+	
+	return true;
 
 	}
 }
